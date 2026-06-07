@@ -1,0 +1,291 @@
+/* ============================================================
+   animations.css — Keyframes, View Transitions & Utilities
+   Pro Compounding Tracker
+   ============================================================ */
+
+/* =============================================================
+   KEYFRAMES — Page & Component Animations
+   ============================================================= */
+
+/* Fade + slide up entrance */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade + slide down exit */
+@keyframes fadeSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Modal Animations
+   ============================================================= */
+
+/* Modal overlay fade in */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal card scale + slide entrance */
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Modal Pulse Ring
+   ============================================================= */
+@keyframes pulseRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.3;
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Background Orb Floating
+   ============================================================= */
+
+/* Orb 1 — Indigo, slow organic drift (25s) */
+@keyframes floatOrb1 {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(40px, -30px);
+  }
+  66% {
+    transform: translate(-20px, 20px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Orb 2 — Cyan, different trajectory (30s) */
+@keyframes floatOrb2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-35px, -20px);
+  }
+  50% {
+    transform: translate(25px, 35px);
+  }
+  75% {
+    transform: translate(-15px, -40px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Orb 3 — Rose, compact movement (20s) */
+@keyframes floatOrb3 {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(30px, 15px);
+  }
+  40% {
+    transform: translate(-25px, -20px);
+  }
+  60% {
+    transform: translate(15px, -30px);
+  }
+  80% {
+    transform: translate(-10px, 25px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Toast Notifications
+   ============================================================= */
+
+/* Toast enters from the right */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Toast exits to the right */
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Subtle Shimmer (for loading states)
+   ============================================================= */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* =============================================================
+   KEYFRAMES — Spin (for loaders)
+   ============================================================= */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================================================
+   VIEW TRANSITIONS — Page/Tab Switching
+   ============================================================= */
+
+/* Each view is hidden by default, animated when active */
+.view {
+  display: none;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+.view.active {
+  display: block;
+}
+
+/* =============================================================
+   COUNT-UP ANIMATION HELPER
+   ============================================================= */
+
+/* Applied to numeric values that animate on update */
+.count-animate {
+  transition: all 0.6s ease-out;
+}
+
+/* =============================================================
+   CARD HOVER TRANSITIONS (reinforcement, also in components)
+   ============================================================= */
+.card {
+  transition:
+    border-color var(--dur-normal) var(--ease-in-out),
+    transform var(--dur-normal) var(--ease-in-out),
+    box-shadow var(--dur-normal) var(--ease-in-out);
+}
+
+.card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+/* =============================================================
+   STAGGERED ENTRANCE — For Lists / Grids
+   ============================================================= */
+.stagger-enter > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.stagger-enter > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-enter > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-enter > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-enter > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-enter > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-enter > *:nth-child(6) { animation-delay: 0.30s; }
+.stagger-enter > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-enter > *:nth-child(8) { animation-delay: 0.40s; }
+
+/* =============================================================
+   LOADING SHIMMER — Placeholder Animation
+   ============================================================= */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-subtle);
+  border-top-color: var(--indigo);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* =============================================================
+   REDUCED MOTION — Accessibility
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .bg-orb {
+    animation: none !important;
+  }
+
+  .modal-pulse-ring {
+    animation: none !important;
+  }
+}

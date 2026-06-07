@@ -1,0 +1,393 @@
+/* ============================================================
+   forms.css — Form Groups, Inputs, Selects & Advanced Panel
+   Pro Compounding Tracker
+   ============================================================ */
+
+/* =============================================================
+   FORM GRID — Layout Containers
+   ============================================================= */
+.form-grid {
+  display: grid;
+  gap: 18px;
+}
+
+/* 2×2 responsive grid — collapses to 1 col on small screens */
+.form-grid--2x2 {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+/* Strict 2-column grid */
+.form-grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* =============================================================
+   FORM GROUP — Individual Field Container
+   ============================================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Label styling — uppercase micro label */
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* =============================================================
+   INPUT WRAPPER — For Prefix Icons (e.g. $ or %)
+   ============================================================= */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Prefix symbol inside input */
+.input-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* When input has a prefix, add left padding */
+.input-wrapper input {
+  padding-left: 32px;
+}
+
+/* =============================================================
+   INPUTS & SELECTS — Base Styles
+   ============================================================= */
+input,
+select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 400;
+  outline: none;
+  transition:
+    border-color var(--dur-fast) var(--ease-in-out),
+    box-shadow var(--dur-fast) var(--ease-in-out);
+}
+
+/* Focus state — indigo glow ring */
+input:focus,
+select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+}
+
+/* Hover state — subtle border lift */
+input:hover:not(:focus),
+select:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Error state — rose border & glow */
+input.input-error,
+select.input-error {
+  border-color: var(--loss);
+  box-shadow: 0 0 0 3px rgba(251, 113, 133, 0.1);
+}
+
+/* Placeholder */
+input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Disabled state */
+input:disabled,
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Number input — hide spinners */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* =============================================================
+   SELECT WRAPPER — Custom Dropdown Arrow
+   ============================================================= */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Custom chevron indicator */
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--text-muted);
+  pointer-events: none;
+  transition: border-color var(--dur-fast) var(--ease-in-out);
+}
+
+.select-wrapper:hover::after {
+  border-top-color: var(--text-secondary);
+}
+
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+/* Select option styling (limited browser support) */
+select option {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 8px;
+}
+
+/* =============================================================
+   FIELD ERROR — Validation Message
+   ============================================================= */
+.field-error {
+  font-size: 0.72rem;
+  color: var(--loss);
+  min-height: 16px;
+  display: block;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* =============================================================
+   ADVANCED TOGGLE — Expand/Collapse Button
+   ============================================================= */
+.advanced-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  margin-top: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-in-out);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.advanced-toggle:hover {
+  color: var(--text-primary);
+}
+
+/* Toggle icon — small circle with + / × indicator */
+.advanced-toggle-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--dur-normal) var(--ease-out);
+}
+
+.advanced-toggle-icon svg {
+  width: 14px;
+  height: 14px;
+  color: var(--indigo);
+  transition: transform var(--dur-normal) var(--ease-out);
+}
+
+/* When expanded, rotate the + icon 45° to become × */
+.advanced-toggle[aria-expanded='true'] .advanced-toggle-icon svg {
+  transform: rotate(45deg);
+}
+
+.advanced-toggle[aria-expanded='true'] .advanced-toggle-icon {
+  background: rgba(99, 102, 241, 0.14);
+}
+
+/* =============================================================
+   ADVANCED PANEL — Collapsible Content Area
+   ============================================================= */
+.advanced-panel {
+  overflow: hidden;
+  transition:
+    max-height var(--dur-smooth) var(--ease-in-out),
+    opacity var(--dur-smooth) var(--ease-in-out),
+    padding-top var(--dur-smooth) var(--ease-in-out);
+}
+
+.advanced-panel.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+}
+
+.advanced-panel.expanded {
+  max-height: 400px;
+  opacity: 1;
+  padding-top: 18px;
+}
+
+/* =============================================================
+   FORM ACTIONS — Submit Button Row
+   ============================================================= */
+.form-actions {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Full-width submit button */
+.form-actions .btn--primary {
+  flex: 1;
+  min-width: 180px;
+  padding: 13px 28px;
+}
+
+/* =============================================================
+   CHECKBOX & RADIO (Custom)
+   ============================================================= */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.checkbox-group input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--indigo-deep);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* =============================================================
+   RANGE SLIDER — Custom Styled
+   ============================================================= */
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--bg-secondary), rgba(99, 102, 241, 0.25));
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 8px 0 4px;
+  padding: 0;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--indigo-deep));
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+  cursor: grab;
+  transition: box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.5);
+  transform: scale(1.1);
+}
+
+.range-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--indigo), var(--indigo-deep));
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+  cursor: grab;
+}
+
+.range-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--bg-secondary), rgba(99, 102, 241, 0.25));
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* =============================================================
+   DCA PANEL — Strategy-specific form containers
+   ============================================================= */
+.dca-panel {
+  /* nothing special, just a container */
+}
+
+/* =============================================================
+   RISK ALERT BANNER — High-risk warning
+   ============================================================= */
+.risk-alert-banner {
+  background: rgba(251, 113, 133, 0.08);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--rose);
+  line-height: 1.6;
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.risk-alert-banner strong {
+  font-weight: 700;
+}

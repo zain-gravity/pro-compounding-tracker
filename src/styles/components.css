@@ -1,0 +1,609 @@
+/* ============================================================
+   components.css — Buttons, Cards, Stats, Alerts, Toasts & More
+   Pro Compounding Tracker
+   ============================================================ */
+
+/* =============================================================
+   BUTTONS — Base & Variants
+   ============================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background var(--dur-fast) var(--ease-in-out),
+    border-color var(--dur-fast) var(--ease-in-out),
+    color var(--dur-fast) var(--ease-in-out),
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-normal) var(--ease-in-out);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Primary — Indigo gradient with glow */
+.btn--primary {
+  background: linear-gradient(135deg, var(--indigo-deep) 0%, #4f46e5 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow:
+    0 2px 12px rgba(99, 102, 241, 0.25),
+    0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 24px rgba(99, 102, 241, 0.35),
+    0 0 0 1px rgba(99, 102, 241, 0.2);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+  box-shadow:
+    0 2px 8px rgba(99, 102, 241, 0.2),
+    0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+/* Secondary — Subtle indigo tint */
+.btn--secondary {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--indigo);
+  border-color: var(--border-accent);
+}
+
+.btn--secondary:hover {
+  background: rgba(99, 102, 241, 0.16);
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn--secondary:active {
+  transform: translateY(0);
+}
+
+/* Ghost — Transparent with hover reveal */
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+}
+
+.btn--ghost:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+/* Success — Emerald gradient with glow */
+.btn--success {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow:
+    0 2px 12px rgba(52, 211, 153, 0.2),
+    0 0 0 1px rgba(52, 211, 153, 0.1);
+}
+
+.btn--success:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 24px rgba(52, 211, 153, 0.3),
+    0 0 0 1px rgba(52, 211, 153, 0.15);
+}
+
+.btn--success:active {
+  transform: translateY(0);
+}
+
+/* Modal dismiss — Rose tinted, full width */
+.btn--modal-dismiss {
+  background: rgba(251, 113, 133, 0.1);
+  color: var(--rose);
+  border-color: rgba(251, 113, 133, 0.2);
+  width: 100%;
+  padding: 14px;
+  font-size: 0.88rem;
+}
+
+.btn--modal-dismiss:hover {
+  background: rgba(251, 113, 133, 0.18);
+  border-color: rgba(251, 113, 133, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(251, 113, 133, 0.12);
+}
+
+.btn--modal-dismiss:active {
+  transform: translateY(0);
+}
+
+/* Button row — horizontal layout for groups */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* =============================================================
+   CARD — Base Glass Card
+   ============================================================= */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 28px 26px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-card);
+  transition:
+    border-color var(--dur-normal) var(--ease-in-out),
+    transform var(--dur-normal) var(--ease-in-out),
+    box-shadow var(--dur-normal) var(--ease-in-out);
+}
+
+.card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Card header — icon + title row */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+/* Card icon — colored circle container */
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+
+.card-icon--indigo {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--indigo);
+}
+
+.card-icon--cyan {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--cyan);
+}
+
+.card-icon--emerald {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--emerald);
+}
+
+.card-icon--rose {
+  background: rgba(251, 113, 133, 0.12);
+  color: var(--rose);
+}
+
+.card-icon--violet {
+  background: rgba(167, 139, 250, 0.12);
+  color: var(--violet);
+}
+
+.card-icon--amber {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--amber);
+}
+
+/* Card title & description */
+.card-title {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.card-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+/* Results area inside a card */
+.results-area {
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+/* Chart container */
+.chart-box {
+  position: relative;
+  width: 100%;
+  max-height: 400px;
+  margin-top: 8px;
+}
+
+.chart-box canvas {
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* =============================================================
+   TAB BAR
+   ============================================================= */
+.tab-bar {
+  margin-bottom: 24px;
+}
+
+.tab-bar-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(14, 22, 42, 0.5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 5px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background var(--dur-fast) var(--ease-in-out),
+    color var(--dur-fast) var(--ease-in-out),
+    border-color var(--dur-fast) var(--ease-in-out),
+    box-shadow var(--dur-fast) var(--ease-in-out);
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.tab.active {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--indigo);
+  border-color: var(--border-accent);
+  font-weight: 600;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.06);
+}
+
+.tab .tab-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.tab .tab-label {
+  font-size: 0.84rem;
+}
+
+/* Tab sliding indicator */
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--indigo-deep), var(--indigo));
+  border-radius: 3px 3px 0 0;
+  transition:
+    left 0.35s var(--ease-out),
+    width 0.35s var(--ease-out);
+  pointer-events: none;
+}
+
+/* =============================================================
+   STAT STRIP — Row of Summary Cards
+   ============================================================= */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    border-color var(--dur-normal) var(--ease-in-out),
+    transform var(--dur-normal) var(--ease-out);
+}
+
+.stat-card:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+
+.stat-card__label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stat-card__value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+/* =============================================================
+   ALERT BADGE — Status Indicators
+   ============================================================= */
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-top: 14px;
+  border: 1px solid transparent;
+}
+
+.alert-badge--ahead {
+  background: var(--profit-bg);
+  color: var(--profit);
+  border-color: var(--profit-border);
+}
+
+.alert-badge--behind {
+  background: var(--loss-bg);
+  color: var(--loss);
+  border-color: var(--loss-border);
+}
+
+.alert-badge--on-track {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--indigo);
+  border-color: rgba(99, 102, 241, 0.18);
+}
+
+/* =============================================================
+   EMPTY STATE — When No Data Exists
+   ============================================================= */
+.empty-state {
+  text-align: center;
+  padding: 56px 24px;
+}
+
+.empty-state-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  display: block;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 auto 20px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+/* =============================================================
+   PLAN BANNER — Active Plan Summary Strip
+   ============================================================= */
+.plan-banner {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.plan-banner strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.plan-banner .plan-param {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.plan-banner .plan-param-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border-default);
+  flex-shrink: 0;
+}
+
+.plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+/* =============================================================
+   TOAST NOTIFICATIONS
+   ============================================================= */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border: 1px solid transparent;
+  animation: toastSlideIn 0.35s var(--ease-out) both;
+  min-width: 260px;
+  max-width: 400px;
+}
+
+.toast--success {
+  background: rgba(5, 150, 105, 0.15);
+  color: var(--emerald);
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+.toast--error {
+  background: rgba(225, 29, 72, 0.15);
+  color: var(--rose);
+  border-color: rgba(251, 113, 133, 0.2);
+}
+
+.toast--info {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--indigo);
+  border-color: rgba(129, 140, 248, 0.2);
+}
+
+.toast--warning {
+  background: rgba(217, 119, 6, 0.15);
+  color: var(--amber);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+/* Toast dismissal animation */
+.toast.removing {
+  animation: toastSlideOut 0.3s var(--ease-in-out) both;
+}
+
+.toast-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* =============================================================
+   EXPORT ACTIONS
+   ============================================================= */
+.export-actions {
+  padding-top: 8px;
+}
+
+.export-actions .btn {
+  font-size: 0.82rem;
+}
+
+/* =============================================================
+   SECTION DIVIDER
+   ============================================================= */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 20px 0;
+  border: none;
+}
+
+/* =============================================================
+   BADGE — Small Inline Labels
+   ============================================================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.badge--indigo {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--indigo);
+}
+
+.badge--emerald {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--emerald);
+}
+
+.badge--rose {
+  background: rgba(251, 113, 133, 0.12);
+  color: var(--rose);
+}
+
+.badge--amber {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--amber);
+}

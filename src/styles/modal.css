@@ -1,0 +1,212 @@
+/* ============================================================
+   modal.css — Psychology Loss Modal
+   Pro Compounding Tracker
+   ============================================================ */
+
+/* =============================================================
+   MODAL OVERLAY — Full-Screen Backdrop
+   ============================================================= */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 5000;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+/* When visible — flex + fade in */
+.modal-overlay.visible {
+  display: flex;
+  animation: modalFadeIn 0.3s ease both;
+}
+
+/* =============================================================
+   MODAL CARD — Main Dialog Container
+   ============================================================= */
+.modal-card {
+  background: linear-gradient(160deg, #1a1640 0%, #111827 100%);
+  border: 1px solid rgba(251, 113, 133, 0.15);
+  border-radius: var(--radius-xl);
+  padding: 40px 36px;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(251, 113, 133, 0.06);
+  animation: modalScaleIn 0.4s ease-out both;
+  position: relative;
+  overflow: hidden;
+}
+
+/* =============================================================
+   MODAL PULSE RING — Ambient Background Animation
+   ============================================================= */
+.modal-pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 1px solid rgba(251, 113, 133, 0.06);
+  animation: pulseRing 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Second ring for layered depth effect */
+.modal-pulse-ring--secondary {
+  width: 220px;
+  height: 220px;
+  border-color: rgba(251, 113, 133, 0.04);
+  animation-delay: 1s;
+}
+
+/* =============================================================
+   MODAL ICON — Emoji / SVG Container
+   ============================================================= */
+.modal-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(251, 113, 133, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(251, 113, 133, 0.12);
+  box-shadow: 0 0 30px rgba(251, 113, 133, 0.08);
+}
+
+/* =============================================================
+   MODAL TEXT CONTENT
+   ============================================================= */
+.modal-heading {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--rose);
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.3;
+}
+
+.modal-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-body strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* =============================================================
+   MODAL TIPS — Strategy Grid
+   ============================================================= */
+.modal-tips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 26px;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-tip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  line-height: 1.4;
+  transition:
+    background var(--dur-fast) var(--ease-in-out),
+    border-color var(--dur-fast) var(--ease-in-out);
+}
+
+.modal-tip:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.modal-tip span {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* =============================================================
+   MODAL ACTIONS — Button Area
+   ============================================================= */
+.modal-actions {
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================================
+   MODAL CLOSE BUTTON (optional X button)
+   ============================================================= */
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  z-index: 2;
+  transition:
+    background var(--dur-fast) var(--ease-in-out),
+    color var(--dur-fast) var(--ease-in-out);
+}
+
+.modal-close:hover {
+  background: rgba(251, 113, 133, 0.1);
+  color: var(--rose);
+}
+
+/* =============================================================
+   MODAL FOOTER TEXT (optional small print)
+   ============================================================= */
+.modal-footer-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.5;
+}
+
+/* =============================================================
+   WIDE TIPS GRID (4 columns when space allows)
+   ============================================================= */
+@media (min-width: 460px) {
+  .modal-tips--wide {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

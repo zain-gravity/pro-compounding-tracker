@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pro Compounding &amp; Trade Tracker</title>
+  <meta name="description" content="Professional compounding calculator, goal-seek planner, live trade tracker, and visual analytics dashboard for disciplined traders." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ======== Ambient Background Orbs ======== -->
+  <div class="bg-mesh" aria-hidden="true">
+    <div class="bg-orb bg-orb--indigo"></div>
+    <div class="bg-orb bg-orb--cyan"></div>
+    <div class="bg-orb bg-orb--rose"></div>
+  </div>
+
+  <!-- ======== Toast Container ======== -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ======== App Shell ======== -->
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="logo-group">
+          <div class="logo-mark" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <rect x="1" y="18" width="5" height="9" rx="1.5" fill="#818cf8" opacity="0.45"/>
+              <rect x="8" y="12" width="5" height="15" rx="1.5" fill="#818cf8" opacity="0.65"/>
+              <rect x="15" y="6" width="5" height="21" rx="1.5" fill="#818cf8" opacity="0.82"/>
+              <rect x="22" y="1" width="5" height="26" rx="1.5" fill="#818cf8"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>Pro Compounding Tracker</h1>
+            <p>Plan · Track · Analyze · Grow</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======== Tab Navigation ======== -->
+    <nav class="tab-bar" role="tablist" aria-label="Dashboard sections">
+      <div class="tab-bar-track">
+        <button class="tab active" data-tab="forward" role="tab" aria-selected="true" id="tab-btn-forward">
+          <span class="tab-icon">📈</span><span class="tab-label">Compounding</span>
+        </button>
+        <button class="tab" data-tab="goalseek" role="tab" aria-selected="false" id="tab-btn-goalseek">
+          <span class="tab-icon">🎯</span><span class="tab-label">Goal Seek</span>
+        </button>
+        <button class="tab" data-tab="tracking" role="tab" aria-selected="false" id="tab-btn-tracking">
+          <span class="tab-icon">📊</span><span class="tab-label">Live Tracker</span>
+        </button>
+        <button class="tab" data-tab="analytics" role="tab" aria-selected="false" id="tab-btn-analytics">
+          <span class="tab-icon">📉</span><span class="tab-label">Analytics</span>
+        </button>
+        <button class="tab" data-tab="risk" role="tab" aria-selected="false" id="tab-btn-risk">
+          <span class="tab-icon">🛡️</span><span class="tab-label">Risk Manager</span>
+        </button>
+        <button class="tab" data-tab="converter" role="tab" aria-selected="false" id="tab-btn-converter">
+          <span class="tab-icon">💱</span><span class="tab-label">USD-INR</span>
+        </button>
+        <div class="tab-indicator" id="tab-indicator"></div>
+      </div>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!--  MAIN CONTENT                                             -->
+    <!-- ======================================================== -->
+    <main class="main-content">
+
+      <!-- ============================================ -->
+      <!-- VIEW 1 — Forward Compounding                -->
+      <!-- ============================================ -->
+      <section class="view active" id="view-forward" role="tabpanel" aria-labelledby="tab-btn-forward">
+
+        <div class="card" id="fc-input-card">
+          <div class="card-header">
+            <div class="card-icon card-icon--indigo">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 17V8M8 17V5M13 17V10M18 17V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">Forward Compounding</h2>
+              <p class="card-desc">Calculate future value with step-by-step projections</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2x2">
+            <div class="form-group">
+              <label for="fc-start">Starting Amount</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="fc-start" placeholder="e.g. 10000" min="0" step="any" />
+              </div>
+              <span class="field-error" id="err-fc-start"></span>
+            </div>
+            <div class="form-group">
+              <label for="fc-rate">Compounding Rate</label>
+              <input type="number" id="fc-rate" placeholder="e.g. 5" min="0" step="any" />
+              <span class="field-error" id="err-fc-rate"></span>
+            </div>
+            <div class="form-group">
+              <label for="fc-type">Value Type</label>
+              <div class="select-wrapper">
+                <select id="fc-type">
+                  <option value="percent">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount (₹)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="fc-trades">Number of Trades</label>
+              <input type="number" id="fc-trades" placeholder="e.g. 20" min="1" step="1" />
+              <span class="field-error" id="err-fc-trades"></span>
+            </div>
+          </div>
+
+          <!-- Advanced Options Toggle -->
+          <button class="advanced-toggle" id="fc-advanced-toggle" type="button" aria-expanded="false" aria-controls="fc-advanced-panel">
+            <span class="advanced-toggle-icon">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            Advanced Configuration
+          </button>
+          <div class="advanced-panel collapsed" id="fc-advanced-panel">
+            <div class="form-grid form-grid--2x2">
+              <div class="form-group">
+                <label for="fc-fee-type">Brokerage / Fee Type</label>
+                <div class="select-wrapper">
+                  <select id="fc-fee-type">
+                    <option value="none">No Fees</option>
+                    <option value="fixed">Fixed Fee per Trade</option>
+                    <option value="percent">Percentage Fee per Trade</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="fc-fee-value">Fee Value</label>
+                <input type="number" id="fc-fee-value" placeholder="0" min="0" step="any" />
+              </div>
+              <div class="form-group">
+                <label for="fc-recurring-type">Recurring Deposit / Withdrawal</label>
+                <div class="select-wrapper">
+                  <select id="fc-recurring-type">
+                    <option value="none">None</option>
+                    <option value="deposit">Deposit after each trade</option>
+                    <option value="withdraw">Withdraw after each trade</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="fc-recurring-value">Recurring Amount</label>
+                <input type="number" id="fc-recurring-value" placeholder="0" min="0" step="any" />
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-fc-calculate" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8h8M8 4v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Calculate
+            </button>
+            <button class="btn btn--ghost" id="btn-fc-reset" type="button">Reset</button>
+          </div>
+        </div>
+
+        <!-- Forward Results -->
+        <div id="fc-results" class="results-area hidden">
+          <div class="stat-strip" id="fc-summary"></div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--emerald">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3v14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 13l4-4 3 3 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Trade-by-Trade Breakdown</h2>
+                <p class="card-desc">Detailed step-by-step projection for each trade iteration</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table" id="fc-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">#</th>
+                    <th>Opening Bal.</th>
+                    <th>Profit</th>
+                    <th>Fees</th>
+                    <th>Dep. / WD</th>
+                    <th>Closing Bal.</th>
+                  </tr>
+                </thead>
+                <tbody id="fc-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- VIEW 2 — Goal Seek                          -->
+      <!-- ============================================ -->
+      <section class="view" id="view-goalseek" role="tabpanel" aria-labelledby="tab-btn-goalseek">
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon card-icon--cyan">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="1.2" fill="currentColor"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">Goal Seek Calculator</h2>
+              <p class="card-desc">Find the exact starting amount needed to reach your target</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2x2">
+            <div class="form-group">
+              <label for="gs-goal">Desired Final Amount</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="gs-goal" placeholder="e.g. 100000" min="0" step="any" />
+              </div>
+              <span class="field-error" id="err-gs-goal"></span>
+            </div>
+            <div class="form-group">
+              <label for="gs-rate">Compounding Rate</label>
+              <input type="number" id="gs-rate" placeholder="e.g. 5" min="0" step="any" />
+              <span class="field-error" id="err-gs-rate"></span>
+            </div>
+            <div class="form-group">
+              <label for="gs-type">Value Type</label>
+              <div class="select-wrapper">
+                <select id="gs-type">
+                  <option value="percent">Percentage (%)</option>
+                  <option value="fixed">Fixed Amount (₹)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="gs-trades">Number of Trades</label>
+              <input type="number" id="gs-trades" placeholder="e.g. 20" min="1" step="1" />
+              <span class="field-error" id="err-gs-trades"></span>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-gs-calculate" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
+              Find Starting Amount
+            </button>
+            <button class="btn btn--ghost" id="btn-gs-reset" type="button">Reset</button>
+          </div>
+        </div>
+
+        <!-- Goal Seek Results -->
+        <div id="gs-results" class="results-area hidden">
+          <div class="stat-strip" id="gs-summary"></div>
+          <div class="card hidden" id="gs-verify-card">
+            <div class="card-header">
+              <div class="card-icon card-icon--indigo">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Verification Breakdown</h2>
+                <p class="card-desc">Forward projection to confirm the calculated starting amount</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">#</th>
+                    <th>Opening Bal.</th>
+                    <th>Profit</th>
+                    <th>Closing Bal.</th>
+                  </tr>
+                </thead>
+                <tbody id="gs-verify-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- VIEW 3 — Live Tracking                      -->
+      <!-- ============================================ -->
+      <section class="view" id="view-tracking" role="tabpanel" aria-labelledby="tab-btn-tracking">
+
+        <!-- Empty State (no plan) -->
+        <div class="card" id="tracking-empty">
+          <div class="empty-state">
+            <div class="empty-state-icon">📈</div>
+            <h3>No Active Plan</h3>
+            <p>Generate a compounding plan in the <strong>Compounding</strong> tab first, then return here to track your real performance.</p>
+            <button class="btn btn--secondary" id="btn-goto-forward" type="button">Go to Compounding →</button>
+          </div>
+        </div>
+
+        <!-- Active Plan State -->
+        <div id="tracking-active" class="hidden">
+
+          <!-- Plan Summary Banner -->
+          <div class="plan-banner" id="lt-plan-banner"></div>
+
+          <!-- Input Card -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--rose">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v16M2 10h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Enter Trade Data</h2>
+                <p class="card-desc">Log your actual results to compare against the projected plan</p>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--2col">
+              <div class="form-group">
+                <label for="lt-trade-num">Current Trade Number</label>
+                <input type="number" id="lt-trade-num" placeholder="e.g. 5" min="1" step="1" />
+                <span class="field-error" id="err-lt-trade-num"></span>
+              </div>
+              <div class="form-group">
+                <label for="lt-actual-balance">Actual Current Balance</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">₹</span>
+                  <input type="number" id="lt-actual-balance" placeholder="e.g. 12500" min="0" step="any" />
+                </div>
+                <span class="field-error" id="err-lt-actual-balance"></span>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn--primary" id="btn-lt-check" type="button">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Check Status
+              </button>
+              <button class="btn btn--success hidden" id="btn-lt-correct" type="button">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 11.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 2v4h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Course Correct
+              </button>
+            </div>
+          </div>
+
+          <!-- Tracking Comparison -->
+          <div id="lt-results" class="results-area hidden">
+            <div class="stat-strip" id="lt-summary"></div>
+            <div id="lt-alert-area"></div>
+          </div>
+
+          <!-- Tracking History Table -->
+          <div class="card hidden" id="lt-history-card">
+            <div class="card-header">
+              <div class="card-icon card-icon--indigo">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3v14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14V9M11 14V7M15 14V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Tracking History</h2>
+                <p class="card-desc">All recorded trade entries vs. projected values</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">Trade</th>
+                    <th>Projected</th>
+                    <th>Actual</th>
+                    <th>Difference</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="lt-history-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Course-Corrected Plan -->
+          <div class="card hidden" id="lt-corrected-card">
+            <div class="card-header">
+              <div class="card-icon card-icon--emerald">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 10a8 8 0 1 1 15-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18 2v5h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Revised Projection</h2>
+                <p class="card-desc">Recalculated remaining trades from your actual balance</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">#</th>
+                    <th>Opening Bal.</th>
+                    <th>Profit</th>
+                    <th>Fees</th>
+                    <th>Dep. / WD</th>
+                    <th>Closing Bal.</th>
+                  </tr>
+                </thead>
+                <tbody id="lt-corrected-tbody"></tbody>
+              </table>
+            </div>
+            <div class="stat-strip" id="lt-corrected-summary"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- VIEW 4 — Analytics & Export                  -->
+      <!-- ============================================ -->
+      <section class="view" id="view-analytics" role="tabpanel" aria-labelledby="tab-btn-analytics">
+
+        <!-- Empty State -->
+        <div class="card" id="analytics-empty">
+          <div class="empty-state">
+            <div class="empty-state-icon">📉</div>
+            <h3>No Data Available</h3>
+            <p>Create a compounding plan and log trade data to unlock visual analytics and export tools.</p>
+          </div>
+        </div>
+
+        <!-- Analytics Content -->
+        <div id="analytics-content" class="hidden">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--cyan">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2 18L7 11l4 4 7-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Growth Curve</h2>
+                <p class="card-desc">Projected vs. Actual performance over trade iterations</p>
+              </div>
+            </div>
+            <div class="chart-box">
+              <canvas id="growth-chart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--emerald">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v12M6 10l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 16h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Export Data</h2>
+                <p class="card-desc">Download your compounding plan and tracking data as a CSV spreadsheet</p>
+              </div>
+            </div>
+            <div class="export-actions">
+              <button class="btn btn--primary" id="btn-export-csv" type="button">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M4 6l4 4 4-4M2 12v2h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Download as CSV
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- VIEW 5 — Risk Manager                       -->
+      <!-- ============================================ -->
+      <section class="view" id="view-risk" role="tabpanel" aria-labelledby="tab-btn-risk">
+
+        <!-- ======== SUB-MODULE A: Liquidation & Margin ======== -->
+        <div class="card" id="rm-liq-card">
+          <div class="card-header">
+            <div class="card-icon card-icon--rose">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v5M10 18v-5M2 10h5M18 10h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">Liquidation & Margin Calculator</h2>
+              <p class="card-desc">Calculate exact liquidation price and manage margin to avoid forced exits</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2x2">
+            <div class="form-group">
+              <label for="rm-entry-price">Entry Price</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input type="number" id="rm-entry-price" placeholder="e.g. 65000" min="0" step="any" />
+              </div>
+              <span class="field-error" id="err-rm-entry-price"></span>
+            </div>
+            <div class="form-group">
+              <label for="rm-margin">Initial Margin (Capital)</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input type="number" id="rm-margin" placeholder="e.g. 1000" min="0" step="any" />
+              </div>
+              <span class="field-error" id="err-rm-margin"></span>
+            </div>
+            <div class="form-group">
+              <label for="rm-leverage">Leverage Multiplier</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">×</span>
+                <input type="number" id="rm-leverage" placeholder="e.g. 10" min="1" step="1" />
+              </div>
+              <span class="field-error" id="err-rm-leverage"></span>
+            </div>
+            <div class="form-group">
+              <label for="rm-position-type">Position Type</label>
+              <div class="select-wrapper">
+                <select id="rm-position-type">
+                  <option value="long">Long (Buy)</option>
+                  <option value="short">Short (Sell)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fee Inputs -->
+          <button class="advanced-toggle" id="rm-advanced-toggle" type="button" aria-expanded="false" aria-controls="rm-advanced-panel">
+            <span class="advanced-toggle-icon">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            Exchange Fees Configuration
+          </button>
+          <div class="advanced-panel collapsed" id="rm-advanced-panel">
+            <div class="form-grid form-grid--2x2">
+              <div class="form-group">
+                <label for="rm-taker-fee">Taker Fee (%)</label>
+                <input type="number" id="rm-taker-fee" placeholder="0.05" min="0" step="any" value="0.05" />
+              </div>
+              <div class="form-group">
+                <label for="rm-maker-fee">Maker Fee (%)</label>
+                <input type="number" id="rm-maker-fee" placeholder="0.02" min="0" step="any" value="0.02" />
+              </div>
+              <div class="form-group">
+                <label for="rm-liq-fee">Liquidation Clearance Fee (%)</label>
+                <input type="number" id="rm-liq-fee" placeholder="0.5" min="0" step="any" value="0.5" />
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-rm-calc-liq" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Calculate Liquidation
+            </button>
+            <button class="btn btn--ghost" id="btn-rm-reset-liq" type="button">Reset</button>
+          </div>
+        </div>
+
+        <!-- Liquidation Results -->
+        <div id="rm-liq-results" class="results-area hidden">
+          <div class="stat-strip" id="rm-liq-summary"></div>
+
+          <!-- Avoid Liquidation Tool -->
+          <div class="card" id="rm-extra-margin-card">
+            <div class="card-header">
+              <div class="card-icon card-icon--emerald">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16z" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v5l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Avoid Liquidation Tool</h2>
+                <p class="card-desc">Drag the slider to see how extra margin changes your liquidation price</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rm-extra-margin">Extra Margin to Add: <strong id="rm-extra-margin-display">$0</strong></label>
+              <input type="range" id="rm-extra-margin" min="0" max="10000" value="0" step="10" class="range-slider" />
+              <div class="slider-labels">
+                <span>$0</span>
+                <span id="rm-slider-max">$10,000</span>
+              </div>
+            </div>
+            <div class="stat-strip" id="rm-new-liq-summary"></div>
+          </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- ======== SUB-MODULE B: DCA Strategy Templates ======== -->
+        <div class="card" id="rm-dca-card">
+          <div class="card-header">
+            <div class="card-icon card-icon--cyan">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3v14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14l3-5 3 3 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">Loss Averaging (DCA) Strategies</h2>
+              <p class="card-desc">Simulate dollar-cost averaging strategies to find your new breakeven</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2col">
+            <div class="form-group">
+              <label for="rm-dca-strategy">Strategy Type</label>
+              <div class="select-wrapper">
+                <select id="rm-dca-strategy">
+                  <option value="fixed">Fixed Step DCA</option>
+                  <option value="martingale">Martingale (Aggressive)</option>
+                  <option value="zone">Zone / Support Pyramiding</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="rm-dca-current-price">Current Market Price</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input type="number" id="rm-dca-current-price" placeholder="e.g. 60000" min="0" step="any" />
+              </div>
+              <span class="field-error" id="err-rm-dca-current-price"></span>
+            </div>
+          </div>
+
+          <!-- Fixed DCA Panel -->
+          <div id="rm-dca-fixed-panel" class="dca-panel">
+            <div class="form-grid form-grid--2x2" style="margin-top:14px">
+              <div class="form-group">
+                <label for="rm-dca-drop-pct">Price Drop per Level (%)</label>
+                <input type="number" id="rm-dca-drop-pct" placeholder="e.g. 5" min="0.1" step="any" />
+                <span class="field-error" id="err-rm-dca-drop-pct"></span>
+              </div>
+              <div class="form-group">
+                <label for="rm-dca-amount">Amount per Level</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-dca-amount" placeholder="e.g. 200" min="0" step="any" />
+                </div>
+                <span class="field-error" id="err-rm-dca-amount"></span>
+              </div>
+              <div class="form-group">
+                <label for="rm-dca-levels">Number of DCA Levels</label>
+                <input type="number" id="rm-dca-levels" placeholder="e.g. 5" min="1" max="20" step="1" />
+                <span class="field-error" id="err-rm-dca-levels"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Martingale Panel -->
+          <div id="rm-dca-mart-panel" class="dca-panel hidden">
+            <div class="form-grid form-grid--2x2" style="margin-top:14px">
+              <div class="form-group">
+                <label for="rm-mart-drop-pct">Price Drop per Level (%)</label>
+                <input type="number" id="rm-mart-drop-pct" placeholder="e.g. 5" min="0.1" step="any" />
+                <span class="field-error" id="err-rm-mart-drop-pct"></span>
+              </div>
+              <div class="form-group">
+                <label for="rm-mart-base-amount">Base Amount (doubles each level)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-mart-base-amount" placeholder="e.g. 100" min="0" step="any" />
+                </div>
+                <span class="field-error" id="err-rm-mart-base-amount"></span>
+              </div>
+              <div class="form-group">
+                <label for="rm-mart-levels">Number of Levels</label>
+                <input type="number" id="rm-mart-levels" placeholder="e.g. 4" min="1" max="10" step="1" />
+                <span class="field-error" id="err-rm-mart-levels"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone Pyramiding Panel -->
+          <div id="rm-dca-zone-panel" class="dca-panel hidden">
+            <div class="form-grid form-grid--2x2" style="margin-top:14px">
+              <div class="form-group">
+                <label for="rm-zone-level-1">Support Level 1</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-zone-level-1" placeholder="e.g. 58000" min="0" step="any" />
+                </div>
+                <span class="field-error" id="err-rm-zone-level-1"></span>
+              </div>
+              <div class="form-group">
+                <label for="rm-zone-level-2">Support Level 2 (optional)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-zone-level-2" placeholder="e.g. 55000" min="0" step="any" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="rm-zone-level-3">Support Level 3 (optional)</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-zone-level-3" placeholder="e.g. 50000" min="0" step="any" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="rm-zone-budget">Total DCA Budget</label>
+                <div class="input-wrapper">
+                  <span class="input-prefix">$</span>
+                  <input type="number" id="rm-zone-budget" placeholder="e.g. 5000" min="0" step="any" />
+                </div>
+                <span class="field-error" id="err-rm-zone-budget"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn--primary" id="btn-rm-simulate" type="button">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Simulate Strategy
+            </button>
+          </div>
+        </div>
+
+        <!-- DCA Results -->
+        <div id="rm-dca-results" class="results-area hidden">
+          <!-- Risk Warning (Sub-Module C) -->
+          <div id="rm-risk-warning" class="hidden">
+            <div class="risk-alert-banner">
+              ⚠️ <strong>High Risk Alert:</strong> You are over-leveraging to save a losing trade. Consider cutting your losses instead of revenge-averaging.
+            </div>
+          </div>
+
+          <div class="stat-strip" id="rm-dca-summary"></div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--indigo">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3v14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14V9M11 14V7M15 14V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">DCA Entry Plan</h2>
+                <p class="card-desc">Step-by-step averaging schedule with running totals</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">Level</th>
+                    <th>Buy Price</th>
+                    <th>Amount</th>
+                    <th>Qty Added</th>
+                    <th>Total Qty</th>
+                    <th>Avg Entry</th>
+                  </tr>
+                </thead>
+                <tbody id="rm-dca-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================ -->
+      <!-- VIEW 6 — USD-INR Crypto Converter            -->
+      <!-- ============================================ -->
+      <section class="view" id="view-converter" role="tabpanel" aria-labelledby="tab-btn-converter">
+
+        <!-- ======== Card 1: Core Inputs ======== -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon card-icon--amber">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v16M6 6l4-4 4 4M6 14l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">USD-INR Crypto Sensitivity Engine</h2>
+              <p class="card-desc">Map exact profit/loss in INR for every price tick. All calculations update live as you type.</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2x2">
+            <div class="form-group">
+              <label for="cv-usd-inr">USD to INR Exchange Rate</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="cv-usd-inr" placeholder="e.g. 85.50" min="0" step="any" value="85.50" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cv-investment-inr">
+                Total Investment (INR)
+                <span id="cv-sync-badge" style="margin-left:6px"></span>
+              </label>
+              <div class="input-wrapper">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="cv-investment-inr" placeholder="e.g. 10000" min="0" step="any" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cv-entry-price">Crypto Entry Price (USD)</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input type="number" id="cv-entry-price" placeholder="e.g. 150.00 or 0.0001560" min="0" step="any" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cv-tick-size">Custom Point Move (Tick Size)</label>
+              <input type="number" id="cv-tick-size" placeholder="e.g. 0.01 or 0.000001" min="0" step="any" />
+            </div>
+            <div class="form-group">
+              <label for="cv-leverage">Leverage Multiplier</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">×</span>
+                <input type="number" id="cv-leverage" placeholder="e.g. 10" min="1" step="1" value="1" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cv-fee-rate">
+                Brokerage / Fee (%)
+                <span id="cv-fee-sync-badge" style="margin-left:6px"></span>
+              </label>
+              <input type="number" id="cv-fee-rate" placeholder="e.g. 0.05" min="0" step="any" value="0.05" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ======== Card 2: Live Results ======== -->
+        <div id="cv-results" class="results-area hidden">
+          <div class="stat-strip" id="cv-summary"></div>
+
+          <!-- Tick Sensitivity Table -->
+          <div class="card" id="cv-tick-table-card">
+            <div class="card-header">
+              <div class="card-icon card-icon--violet">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3v14h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 13l3-4 3 2 4-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">INR Sensitivity Analyzer</h2>
+                <p class="card-desc">How your portfolio value changes in INR for each tick multiple</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-num">Ticks</th>
+                    <th>Price Move</th>
+                    <th>Profit (₹)</th>
+                    <th>Loss (₹)</th>
+                    <th>% Change</th>
+                  </tr>
+                </thead>
+                <tbody id="cv-tick-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======== Liquidation Result Card ======== -->
+        <div id="cv-liq-results" class="results-area hidden">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon card-icon--rose">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v5M10 18v-5M2 10h5M18 10h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+              </div>
+              <div>
+                <h2 class="card-title">Liquidation Price Calculator</h2>
+                <p class="card-desc">Exact price at which your leveraged position will be liquidated</p>
+              </div>
+            </div>
+            <div class="stat-strip" id="cv-liq-summary"></div>
+          </div>
+        </div>
+
+        <hr class="section-divider" />
+
+        <!-- ======== Card 3: PnL Prediction ======== -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon card-icon--emerald">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2l3 6h5l-4 4 2 6-6-3-6 3 2-6-4-4h5l3-6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <h2 class="card-title">Dynamic Prediction PnL Card</h2>
+              <p class="card-desc">Set a target price and direction to see your predicted profit/loss in INR (leveraged)</p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--2col">
+            <div class="form-group">
+              <label for="cv-target-price">Target / Exit Price (USD)</label>
+              <div class="input-wrapper">
+                <span class="input-prefix">$</span>
+                <input type="number" id="cv-target-price" placeholder="e.g. 89.00" min="0" step="any" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="cv-direction">Trade Direction</label>
+              <div class="select-wrapper">
+                <select id="cv-direction">
+                  <option value="long">🟢 LONG (Buy)</option>
+                  <option value="short">🔴 SHORT (Sell)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PnL Results -->
+        <div id="cv-pnl-results" class="results-area hidden">
+          <div class="stat-strip" id="cv-pnl-summary"></div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Pro Compounding Tracker v1.0 · Precision tools for disciplined traders</p>
+    </footer>
+  </div>
+
+  <!-- ======== Psychology / Loss Detection Modal ======== -->
+  <div class="modal-overlay" id="loss-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-pulse-ring" aria-hidden="true"></div>
+      <div class="modal-icon-wrap">
+        <span class="modal-emoji">🧘</span>
+      </div>
+      <h2 id="modal-title" class="modal-heading">Loss Detected — Pause &amp; Breathe</h2>
+      <p class="modal-body">
+        I think you incurred a loss. Please have a glass of water, walk for 2 mins, calm down, start reading the chart, and then after 5 mins do trading.
+      </p>
+      <div class="modal-tips">
+        <div class="modal-tip"><span>💧</span> Drink water</div>
+        <div class="modal-tip"><span>🚶</span> Walk 2 min</div>
+        <div class="modal-tip"><span>📖</span> Read the chart</div>
+        <div class="modal-tip"><span>⏱️</span> Wait 5 min</div>
+      </div>
+      <button class="btn btn--modal-dismiss" id="btn-dismiss-modal" type="button">I'm Ready — Dismiss</button>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

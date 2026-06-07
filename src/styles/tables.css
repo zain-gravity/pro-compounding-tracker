@@ -1,0 +1,156 @@
+/* ============================================================
+   tables.css — Data Table Styling
+   Pro Compounding Tracker
+   ============================================================ */
+
+/* =============================================================
+   TABLE SCROLL CONTAINER
+   ============================================================= */
+.table-scroll {
+  overflow-x: auto;
+  margin-top: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: rgba(8, 14, 28, 0.3);
+
+  /* Custom scrollbar for horizontal scroll */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.2) transparent;
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: var(--radius-full);
+}
+
+/* =============================================================
+   DATA TABLE — Base
+   ============================================================= */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+/* =============================================================
+   TABLE HEAD
+   ============================================================= */
+.data-table thead th {
+  background: rgba(99, 102, 241, 0.06);
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  padding: 12px 14px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* First column — row number (centered, narrow) */
+.data-table thead th:first-child,
+.data-table thead th.col-num {
+  text-align: center;
+  width: 50px;
+}
+
+/* =============================================================
+   TABLE BODY
+   ============================================================= */
+.data-table tbody td {
+  padding: 11px 14px;
+  text-align: right;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  transition: background var(--dur-fast) var(--ease-in-out);
+}
+
+/* First column — row number */
+.data-table tbody td:first-child {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Row hover effect — subtle indigo wash */
+.data-table tbody tr:hover td {
+  background: rgba(99, 102, 241, 0.03);
+}
+
+/* Remove bottom border from last row */
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============================================================
+   SPECIAL CELL STYLES
+   ============================================================= */
+
+/* Profit / loss cells */
+.data-table td.cell-profit {
+  color: var(--profit);
+  font-weight: 600;
+}
+
+.data-table td.cell-loss {
+  color: var(--loss);
+  font-weight: 600;
+}
+
+/* Highlight column (e.g. total column) */
+.data-table td.cell-highlight {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Muted cells (e.g. secondary info) */
+.data-table td.cell-muted {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+/* =============================================================
+   EMPTY TABLE STATE
+   ============================================================= */
+.data-table .table-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.data-table .table-empty td {
+  text-align: center;
+  border-bottom: none;
+}
+
+/* =============================================================
+   TABLE FOOTER / SUMMARY ROW
+   ============================================================= */
+.data-table tfoot td {
+  padding: 12px 14px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--text-primary);
+  background: rgba(99, 102, 241, 0.04);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.data-table tfoot td:first-child {
+  text-align: center;
+}
