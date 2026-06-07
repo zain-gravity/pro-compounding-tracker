@@ -13,21 +13,14 @@ const STORAGE_KEY = 'pro-compounding-tracker-state';
 
 /**
  * The shared application state object.
- *
- * @property {Object|null} plan
- *   Holds the computed compounding plan produced by the engine.
- *   Shape: { params: {...}, rows: [...] }
- *
- * @property {Object} actualBalances
- *   A map of trade-number → actual balance entered during live tracking.
- *
- * @property {number|null} prevActualBalance
- *   The most-recently entered actual balance for loss detection.
  */
 export const state = {
   plan: null,
   actualBalances: {},
   prevActualBalance: null,
+  username: null,
+  isAdmin: false,
+  adminPasscode: null,
 };
 
 // ── Restore state from localStorage on module load ──────────
@@ -42,6 +35,9 @@ export const state = {
         if (parsed.prevActualBalance !== undefined) {
           state.prevActualBalance = parsed.prevActualBalance;
         }
+        if (parsed.username) state.username = parsed.username;
+        if (parsed.isAdmin !== undefined) state.isAdmin = parsed.isAdmin;
+        if (parsed.adminPasscode) state.adminPasscode = parsed.adminPasscode;
       }
     }
   } catch (err) {
@@ -56,11 +52,70 @@ function persistState() {
       plan: state.plan,
       actualBalances: state.actualBalances,
       prevActualBalance: state.prevActualBalance,
+      username: state.username,
+      isAdmin: state.isAdmin,
+      adminPasscode: state.adminPasscode,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
   } catch (err) {
-    // localStorage may be full or disabled — fail silently
     console.warn('[state] Could not persist state:', err);
+  }
+}
+
+/**
+ * Save current state to MongoDB database.
+ */
+export async function saveToDatabase() {
+  if (!state.username) return;
+  
+  try {
+    const response = await fetch('/api/state', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: state.username,
+        plan: state.plan,
+        actualBalances: state.actualBalances,
+        prevActualBalance: state.prevActualBalance,
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to save data');
+    }
+  } catch (err) {
+    console.error('[state] Error saving to MongoDB:', err);
+  }
+}
+
+/**
+ * Fetch state from MongoDB database and load it.
+ */
+export async function fetchFromDatabase(username) {
+  if (!username) return;
+  
+  try {
+    const response = await fetch(`/api/state?username=${encodeURIComponent(username)}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data');
+    }
+    
+    const data = await response.json();
+    
+    // Update state
+    state.plan = data.plan;
+    state.actualBalances = data.actualBalances || {};
+    state.prevActualBalance = data.prevActualBalance !== undefined ? data.prevActualBalance : null;
+    
+    // Notify listeners so UI updates with loaded database content
+    notify();
+    return data;
+  } catch (err) {
+    console.error('[state] Error fetching from MongoDB:', err);
+    throw err;
   }
 }
 
@@ -69,10 +124,6 @@ const listeners = new Set();
 
 /**
  * Subscribe to state changes.
- *
- * @param {Function} fn - Callback invoked with the full `state`
- *   object whenever `notify()` is called.
- * @returns {Function} unsubscribe - Call this to remove the listener.
  */
 export function subscribe(fn) {
   listeners.add(fn);
@@ -80,12 +131,17 @@ export function subscribe(fn) {
 }
 
 /**
- * Notify every registered listener of a state change
- * and persist state to localStorage.
+ * Notify every registered listener of a state change,
+ * persist to localStorage, and trigger database sync.
  */
 export function notify() {
   // Save to localStorage first
   persistState();
+
+  // Trigger background MongoDB save
+  if (state.username) {
+    saveToDatabase();
+  }
 
   listeners.forEach((fn) => {
     try {
@@ -97,6 +153,36 @@ export function notify() {
 }
 
 /**
+ * Set user information and fetch their state.
+ */
+export async function setUserInfo(username, isAdmin = false, adminPasscode = null) {
+  state.username = username;
+  state.isAdmin = isAdmin;
+  state.adminPasscode = adminPasscode;
+  persistState();
+  
+  if (username) {
+    await fetchFromDatabase(username);
+  }
+  notify();
+}
+
+/**
+ * Log out and clear state.
+ */
+export function logout() {
+  state.username = null;
+  state.isAdmin = false;
+  state.adminPasscode = null;
+  state.plan = null;
+  state.actualBalances = {};
+  state.prevActualBalance = null;
+  
+  persistState();
+  notify();
+}
+
+/**
  * Reset the entire state back to its initial defaults,
  * clear localStorage, and notify all listeners.
  */
@@ -104,12 +190,11 @@ export function resetState() {
   state.plan = null;
   state.actualBalances = {};
   state.prevActualBalance = null;
-  notify(); // This also clears the persisted data (saves empty state)
+  notify();
 }
 
 /**
  * Check if there is saved state available.
- * @returns {boolean} true if state was restored from localStorage
  */
 export function hasSavedState() {
   return state.plan !== null;

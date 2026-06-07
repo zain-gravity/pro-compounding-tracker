@@ -42,6 +42,15 @@
             <p>Plan · Track · Analyze · Grow</p>
           </div>
         </div>
+        
+        <!-- Logged in User Profile indicator -->
+        <div class="user-profile-badge" id="user-profile-badge" style="display: none;">
+          <div class="user-info">
+            <span class="user-label">Trader:</span>
+            <span class="user-name" id="display-user-name">Guest</span>
+          </div>
+          <button class="btn btn-outline btn-xs" id="btn-switch-user" title="Switch Trader Profile" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 4px;">Switch</button>
+        </div>
       </div>
     </header>
 
@@ -65,6 +74,9 @@
         </button>
         <button class="tab" data-tab="converter" role="tab" aria-selected="false" id="tab-btn-converter">
           <span class="tab-icon">💱</span><span class="tab-label">USD-INR</span>
+        </button>
+        <button class="tab" data-tab="admin" role="tab" aria-selected="false" id="tab-btn-admin" style="display: none;">
+          <span class="tab-icon">🔑</span><span class="tab-label">Admin</span>
         </button>
         <div class="tab-indicator" id="tab-indicator"></div>
       </div>
@@ -895,6 +907,111 @@
         </div>
 
       </section>
+
+      <!-- ======== Mode 7: Super Admin Dashboard ======== -->
+      <section class="view" id="view-admin" role="tabpanel" aria-labelledby="tab-btn-admin">
+        <div class="view-header">
+          <div class="view-title-group">
+            <h2 class="view-title">Super Admin Dashboard</h2>
+            <p class="view-subtitle">Monitor and review compounding activities across all trader profiles</p>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom: 24px;">
+          <div class="stat-card">
+            <span class="stat-label">Total Registered Traders</span>
+            <span class="stat-value" id="admin-stat-traders">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Active Plans</span>
+            <span class="stat-value" id="admin-stat-plans">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Last Synchronization</span>
+            <span class="stat-value" id="admin-stat-sync">Just now</span>
+          </div>
+        </div>
+
+        <!-- Card: Traders List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon card-icon--indigo">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 10a4 4 0 110-8 4 4 0 010 8zm-8 8a8 8 0 0116 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <h3 class="card-title">Active Trader Database</h3>
+              <p class="card-desc">Click on any trader to inspect their active sheet and tracking data</p>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table" id="admin-traders-table">
+              <thead>
+                <tr>
+                  <th>Trader Name</th>
+                  <th>Starting Capital</th>
+                  <th>Current Balance</th>
+                  <th>Completed Trades</th>
+                  <th>Compounding Target</th>
+                  <th>Last Active</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-traders-tbody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Inspect Section (Hidden by default, shown when clicking Inspect) -->
+        <div class="results-area hidden" id="admin-inspect-area" style="margin-top: 30px;">
+          <div class="card" style="border: 1px solid rgba(129, 140, 248, 0.3);">
+            <div class="card-header" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 class="card-title">Inspecting Trader: <span id="admin-inspect-username" style="color: #818cf8; font-weight: 700;">-</span></h3>
+                <p class="card-desc">Viewing a read-only snapshot of this user's active compounding plan</p>
+              </div>
+              <button class="btn btn-outline btn-xs" id="btn-close-inspect">Close Snapshot</button>
+            </div>
+            
+            <div class="form-grid form-grid--3col" style="margin-top: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 15px;">
+              <div>
+                <span class="stat-label">Start Amount</span>
+                <span class="stat-value" id="inspect-start-amount" style="font-size: 1.25rem;">-</span>
+              </div>
+              <div>
+                <span class="stat-label">Projected Final Balance</span>
+                <span class="stat-value" id="inspect-final-balance" style="font-size: 1.25rem;">-</span>
+              </div>
+              <div>
+                <span class="stat-label">Progress</span>
+                <span class="stat-value" id="inspect-progress" style="font-size: 1.25rem;">-</span>
+              </div>
+            </div>
+
+            <h4 style="margin: 20px 0 10px 0; color: #f1f5f9;">Compounding Plan &amp; Trades</h4>
+            <div class="table-scroll" style="max-height: 400px;">
+              <table class="data-table" id="admin-inspect-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Opening Balance</th>
+                    <th>Profit/Loss</th>
+                    <th>Fees Paid</th>
+                    <th>Closing Balance</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-inspect-tbody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <!-- Footer -->
@@ -921,6 +1038,40 @@
         <div class="modal-tip"><span>⏱️</span> Wait 5 min</div>
       </div>
       <button class="btn btn--modal-dismiss" id="btn-dismiss-modal" type="button">I'm Ready — Dismiss</button>
+    </div>
+  </div>
+
+  <!-- ======== User Identification Modal ======== -->
+  <div class="modal-overlay" id="user-modal" role="dialog" aria-modal="true" aria-labelledby="user-modal-title" style="display: none; z-index: 10000;">
+    <div class="modal-card" style="max-width: 400px;">
+      <div class="modal-icon-wrap" style="background: rgba(129, 140, 248, 0.1); color: #818cf8;">
+        <span class="modal-emoji">📈</span>
+      </div>
+      <h2 id="user-modal-title" class="modal-heading" style="margin-bottom: 8px;">Trader Login</h2>
+      <p class="modal-body" style="font-size: 0.9rem; line-height: 1.5; color: #94a3b8; margin-bottom: 16px;">
+        Please enter your name to fetch your compounding plans, track trades, and sync progress automatically to the database.
+      </p>
+      
+      <form id="user-login-form" style="width: 100%; display: flex; flex-direction: column; gap: 16px;">
+        <div class="form-group" style="text-align: left; margin-bottom: 0;">
+          <label for="login-username" style="color: #94a3b8; font-size: 0.8rem; font-weight: 500; margin-bottom: 6px; display: block;">Your Name</label>
+          <div class="input-wrapper">
+            <input type="text" id="login-username" placeholder="e.g. John Doe" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;" />
+          </div>
+        </div>
+        
+        <!-- Passcode Group, visible only if "Super Admin" is typed -->
+        <div class="form-group hidden" id="admin-passcode-group" style="text-align: left; margin-bottom: 0;">
+          <label for="login-passcode" style="color: #f43f5e; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; display: block;">Super Admin Passcode</label>
+          <div class="input-wrapper">
+            <input type="password" id="login-passcode" placeholder="Enter Admin Passcode" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(244,63,94,0.3); background: rgba(0,0,0,0.2); color: white;" />
+          </div>
+        </div>
+        
+        <button class="btn" type="submit" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #818cf8, #4f46e5); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+          Access Profile
+        </button>
+      </form>
     </div>
   </div>
 

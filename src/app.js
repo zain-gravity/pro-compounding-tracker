@@ -13,7 +13,8 @@ import { initTracking, refreshTracking } from './views/tracking.js';
 import { initAnalytics, refreshAnalytics } from './views/analytics.js';
 import { initRisk } from './views/risk.js';
 import { initConverter, refreshConverter } from './views/converter.js';
-import { hasSavedState } from './core/state.js';
+import { initAdmin, refreshAdmin } from './views/admin.js';
+import { state, fetchFromDatabase, hasSavedState } from './core/state.js';
 import { showToast } from './components/toast.js';
 
 /**
@@ -26,6 +27,7 @@ export function initApp() {
     if (tabName === 'tracking') refreshTracking();
     if (tabName === 'analytics') refreshAnalytics();
     if (tabName === 'converter') refreshConverter();
+    if (tabName === 'admin') refreshAdmin();
   });
 
   // --- Initialize shared components ---
@@ -38,11 +40,29 @@ export function initApp() {
   initAnalytics();
   initRisk();
   initConverter();
+  initAdmin();
 
-  // --- Restore saved state if available ---
-  if (hasSavedState()) {
-    restoreForwardIfSaved();
-    showToast('Previous session restored', 'info', 2500);
+  // --- Restore saved state if available (with DB sync) ---
+  if (state.username) {
+    fetchFromDatabase(state.username)
+      .then(() => {
+        if (hasSavedState()) {
+          restoreForwardIfSaved();
+        }
+      })
+      .catch((err) => {
+        console.warn('[app] Could not sync database state on load:', err);
+        // Fallback to local storage state if fetch fails (e.g. offline)
+        if (hasSavedState()) {
+          restoreForwardIfSaved();
+          showToast('Session restored (offline)', 'info', 2500);
+        }
+      });
+  } else {
+    if (hasSavedState()) {
+      restoreForwardIfSaved();
+      showToast('Previous session restored', 'info', 2500);
+    }
   }
 
   console.log('Pro Compounding Tracker initialized.');

@@ -607,3 +607,84 @@
   background: rgba(251, 191, 36, 0.12);
   color: var(--amber);
 }
+
+/* =============================================================
+   USER PROFILE BADGE & BUTTONS
+   ============================================================= */
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(14, 22, 42, 0.45);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user-profile-badge .user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.user-profile-badge .user-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.user-profile-badge .user-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--indigo);
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-xs {
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-xs:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+
+.btn-outline:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--indigo);
+  border-color: var(--border-accent);
+}
+
+.btn-primary.btn-xs {
+  background: linear-gradient(135deg, var(--indigo-deep) 0%, #4f46e5 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn-primary.btn-xs:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, var(--indigo) 100%);
+  border-color: transparent;
+}
+
